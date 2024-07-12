@@ -36,6 +36,7 @@ async function possibleGames() {
     // findNumber function
 
     let possibleGames = 0;
+    let gamePower = 0;
 
     const redMaxCount = 12;
     const greenMaxCount = 13;
@@ -50,12 +51,17 @@ async function possibleGames() {
     
     games.forEach(game => {
 
+        let maxBlue = 1;
+        let maxGreen = 1;
+        let maxRed = 1;
+
         let gamePossible = true;
         let gameID = parseInt(game.split(' ')[1]);
         let trimmedGame = game.substring(8);
         let rounds = trimmedGame.split(';').map(round => round.trim());
         
         rounds.forEach(round => {
+
             let greenIndex = round.indexOf(green) - 2;
             let redIndex = round.indexOf(red) - 2;
             let blueIndex = round.indexOf(blue) - 2;
@@ -76,7 +82,19 @@ async function possibleGames() {
                 redCount = findNumber(round, redIndex);
             }
 
-            console.log("game:", gameID, greenCount, "green", redCount,  "red", blueCount, "blue");
+            if (blueCount > maxBlue) {
+                maxBlue = blueCount;
+            }
+
+            if (redCount > maxRed) {
+                maxRed = redCount;
+            }
+
+            if (greenCount > maxGreen) {
+                maxGreen = greenCount;
+            }
+
+            // console.log("game:", gameID, greenCount, "green", redCount,  "red", blueCount, "blue");
 
             if (greenCount > greenMaxCount ||
                 blueCount > blueMaxCount ||
@@ -87,13 +105,17 @@ async function possibleGames() {
 
         });
 
+        gamePower += maxBlue * maxGreen * maxRed;
+
         if (gamePossible) {
             possibleGames += parseInt(gameID);
         }
     });
 
-    console.log(possibleGames);   
+    console.log("possible games: ", possibleGames);   
+    console.log("game power: ", gamePower);
     // part 1 answer: 2913
+    // part 2 answer: 2286
 }
 
 function findNumber(round, index) {
